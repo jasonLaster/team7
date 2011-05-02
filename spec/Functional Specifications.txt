@@ -1,0 +1,3 @@
+Functional Specifications
+
+The main purpose of the Load program is to read a file of music and comprehend each note. The program will parse the txt and determine the values of each note and add the notes into a larger array, which is used to play the song. The larger array will keep track of the number of beats and the MIDI value of the notes. 

@@ -1,0 +1,25 @@
+#Core Specifications
+
+###Owner: Drew Jankowski
+###Last Updated 4/25/11
+
+##Overview
+	The core is the underlying base that interfaces the hardware capabilities with the user.
+This spec is not yet complete, it is intended to be used to help the coder to write the core source files.
+
+##Functional Specifications
+	The user will interact with the core through the Psyche GUI. The code is predominantly from the core of the piano project.
+The core allows the user to play notes either by using the keyboard or by 
+loading a song from a file with the lilypond (*.ly) file format.
+
+##Technical Specifications
+	The core structure consists of 5 members: Mapii keyboard_map, FluidSynth synth, Instrument player, Instrument song, and int current_subdiv.
+The keyboard_map member contains the mapping from keyboard keys to midi notes. It has the associated functions: core_note_to_midi, core_keyboard_to_midi,
+core_midi_to_keyboard, core_load_keyboard_map.  Nothing too fancy going on here, just a simple mapii data structure that holds the keyboard ascii values as keys
+and midi note values as values.
+	The synth member is a FluidSynth object that interfaces with the audio hardware. The Instrument struct stores the midi instrument,
+the midi instrument, an array of notes (if the song is from a file), and a number of notes (if the song is from a file).  It has 
+two separate new functions, one for a 'player' and one for loading a song from a file. It also has functions for playing a note
+and stopping a note. Again, nothing tricky going on here.
+	The trickiest core function comes in Load.c.  This function is used to parse the lilypond file and store the notes in an
+Instrument struct's array.

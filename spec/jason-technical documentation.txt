@@ -1,0 +1,60 @@
+Hey Drew,
+
+Andy and I just met. I think it was really productive. We organized the current assignment into two main sections
+
+1. Playing a song 
+  + load a song
+  + play a song / play notes pressed
+
+2. GUI + Graphics
+  + dropdown for selecting instruments
+  + dropdown for selcting a soundformat, songfile
+  + play button
+  + show notes as they play
+  
+We only really discussed the first part. I'm going to try and take a stab at describing our approach for playing a song and playing notes as they are pressed. I think Andy will write up our strategy for loading a song. All of this is subject to change, but hopefully this will help catch you up and serve as a first draft for the documentation :)
+
+---------
+
+Everything necessary for playing music is organized in Psyche, which is really similar to Balkcom's SynthGui. Like SynthGui, Psyche has an initialization method that sets most things up and callbacks for key presses, key releases, music beats, loading songs, and playing songs. 
+
+The Psyche struct holds three members: a reference to a NoteMapping struct which is similar to a mapii, and two Instrument references called player and song. 
+
+Instruments are probably the biggest abstraction needed to generalize our existing code. In our app, the first instrument (player) plays notes that the user presses and the second instrument (song) plays notes in the song.
+
+The Instrument struct has three members:
+    1. int instrument
+    2. FluidSynth* synth
+    3. int* notes
+
+The notes pointer either stores the keys that are currently being pressed or when the song's notes are played. For the player, the notes pointer reference an array of notes length, where each element is either zero or one based on whether the note is being played. For the song, the notes pointer references an array of notes * beats length, where each elemenet is either zero or one based on whether the note is played at that beat. When the player instrument is instantiated, the notes array is cleared to zeroes. When the song instrument is instantiated we load the song into the notes array. 
+
+In the psyche c-file there are three regularly called callbacks, keypress, keyrelease, and beat. The nice thing about this design is that keypress and keyrelease barely change. 
+
+When keypress is called, it is passed a keyevent and psyche object. Keypress then figures out which key is pressed and checks to see if it is currently being played by seeing if player->notes[note] is 0 or 1. If it is not being played, it calls fluid_synth_on and passes it player->synth and the note. Keyrelease is very similar.
+
+When beat is called, it is passed a time value and psyche object. Beat then figures out which beat it is and loops through all the notes and checks to see if that note is already being played and if it should be played. It does this by seeing if song->notes[note*(beat-1)] and song->notes[note*beat] are zero or one. If both are zero or one, nothing happens, if the note was not being played, but now it should be, it calls fluid_synth_on and passes it song->synth and the appropriate note. 
+
+Psyche has two other fairly simple callbacks: load_song and play_song. 
+
+Load song does three things:
+  1. psyche->song = new_instrument()
+  2. psyche->song->notes = load_songfile(song_filename, note_mapping)
+  3. psyche->song->instrument = instrument
+
+Play song starts playing a song if a song has been loaded in. I'm not sure what the best way to do this is. I'm currently thinking that there will have to be two variables play_song and song_start and when the play button is pressed song_start is set to the current time and play_song is set to true. Then is the beat callback we can play the song if play_song is true and figure out the current beat by calculating (time-song_start)*beat. 
+
+The last interesting element of this design is the NoteMapping piece. NoteMapping looks a lot like the original mapii, but has several additional helper methods. The struct has three elements: an array for qwerty keys, an array for midi value, and an int that stores the size of the two arrays. 
+
+NoteMapping will need to have a function that takes a note and octave and returns the midivalue. If this is impossible to do, we can add a third array to NoteMapping that saves these values e.g. ["c", "d", ... "c''", "d''",...].
+
+NoteMapping will also need qwerty_key_index which takes a key and returns the int value of its index.
+
+----
+
+While this is a ton of stuff and I definitely did not expect this to be so long. There's a ton of stuff on the GUI side of things that I'm sure will need to be folded in. For example i'm not sure how we'll start playing the song and I'm not sure how we'll select instruments. 
+
+Hopefully at this point it kinda makes sense how we can play music with a Psyche object that is kinda like the SynthGui from before and an additional beat event.
+
+I've attached an overview file as well, which gives an overview of all the struct and method definitions that I described here. 
+

@@ -1,0 +1,28 @@
+Functional Specifications for PsycheGUI
+
+The purpose of the psyche gui is the initialize all the widgets for the piano program. The important widgets include listening for various key presses, having several menus to choose an instrument or file and exit from the program, and the drawing panel, which is passed to the graphics. 
+For now the callbacks for the menus are missing, but they will be added later.
+
+Technical Specifications for PsycheGUI
+
+functions:
+PsycheGUI *PsycheGUI_new(Core core);
+
+purpose: the new psychegui has the window, the menus, and the timer for the program. The psychegui also intializes the beginning of the program.
+
+void PsycheGUI_destroy(PsycheGUI *gui);
+
+purpose: destroys the psychegui object and frees the memory
+
+static void cb_keypress(GtkWidget *widget, GdkEventKey *kevent, gpointer data);
+
+purpose: searches for a keypress call and then relays the information
+
+static void cb_keyrelease(GtkWidget *widget, GdkEventKey *kevent, gpointer data);
+
+purpose: searches for a keyrelease call and then relays the information
+
+static void cb_subdivision_beat(gpointer data);
+
+purpose: checks the subdivisions and plays the song. If the song is playing, then the note continues if there is a two, the note stops after playing. Finishes the song after the loops cycles through the entire array.
+
