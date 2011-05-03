@@ -281,17 +281,13 @@ static void cb_subdivision_beat(gpointer data) {
     for(int note = 0; note < 128; note++) {
 
       if (instrument_first_note(core->song, note, core->current_subdiv - 1)){
-
         fluid_synth_noteon(core->synth, core->song->channel, note, 100);
-
-        //make random later
-        int  x = 100;
-        int duration = NOTETIME;
-        // draw_note(duration, x, x, x);
       }
 
-      else if (instrument_last_note(core->song, note, core->current_subdiv - 1))
+      if (instrument_last_note(core->song, note, core->current_subdiv - 1)){
         fluid_synth_noteoff(core->synth, core->song->channel, note);
+      }
+
     }
 
     core->current_subdiv++;
