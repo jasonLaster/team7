@@ -4,3 +4,6 @@ FluidR3_GM.sf2
 ./.git
 src/.gitignore
 
+spec/technical-spec
+spec/technical-spec.html
+

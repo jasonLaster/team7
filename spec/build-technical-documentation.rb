@@ -20,7 +20,7 @@ def printfilefooter
 end
 
 def printheader
-  @o.puts "#Technical Documenation\n"
+  @o.puts "#Psyche Methods\n"
 end
 
 printheader()
