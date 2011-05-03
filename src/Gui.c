@@ -172,33 +172,20 @@ static void destroy( GtkWidget *widget, gpointer data) {
 
 }
 
-
-//FROM THE HELLO WORLD GTK TUTORIAL AT http://developer.gnome.org/gtk-tutorial/stable/c39.html#SEC-HELLOWORLD
-static gboolean delete_event( GtkWidget *widget,
-                              GdkEvent  *event,
-                              gpointer   data )
-{
-    /* If you return FALSE in the "delete-event" signal handler,
-     * GTK will emit the "destroy" signal. Returning TRUE means
-     * you don't want the window to be destroyed.
-     * This is useful for popping up 'are you sure you want to quit?'
-     * type dialogs. */
+/*
+ */
+static gboolean delete_event( GtkWidget *widget, GdkEvent  *event, gpointer data ) {
 
   g_print ("delete event occurred\n");
-
-  //added by Drew J.
   Gui *gui = (Gui *) data;
   gui_destroy(gui);
 
-
-
-    /* Change TRUE to FALSE and the main window will be destroyed with
-     * a "delete-event". */
-
+  // FALSE => destroy window, TRUE => do nothing 
   return FALSE;
 }
 
-
+/*
+ */
 static void cb_file_select(GtkWidget *widget, GdkEventKey *kevent, gpointer data) {
       GtkWidget *filew;
       Gui    *gui = (Gui *) data;
@@ -211,11 +198,15 @@ static void cb_file_select(GtkWidget *widget, GdkEventKey *kevent, gpointer data
       gtk_widget_show(filew);
 }
 
+/*
+ */
 static void file_ok_sel(GtkWidget *widget, gpointer g) {
   Gui* gui = (Gui*) g;
   g_print ("%s\n", gtk_file_selection_get_filename (GTK_FILE_SELECTION (gui->filew)));
 }
 
+/*
+ */
 static void cb_keypress(GtkWidget *widget, GdkEventKey *kevent, gpointer data){
 
   Gui* gui = (Gui*) data;
@@ -260,6 +251,8 @@ static void cb_keyrelease(GtkWidget *widget, GdkEventKey *kevent, gpointer data)
   }
 }
 
+/*
+ */
 static void cb_play(GtkWidget *widget, GdkEventKey *kevent, gpointer data){
   Gui* gui = (Gui*) data;
   Core* core = gui->core;
