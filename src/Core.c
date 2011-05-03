@@ -20,6 +20,9 @@ Core* core_new(const char *keyboard_map_file){ //FluidSynth* fluid,
   core->synth = fluidsynth_new();
   core->player = instrument_new(0, 128);
   core->current_subdiv = 0;
+  
+
+  printf("core pointer address %p\n", core);
 
   // SIMULATE load and play callbacks
   cb_load_song(core, "e2.pond");
