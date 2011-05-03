@@ -1,0 +1,14 @@
+ServerSpec.txt Created on: May 1, 2011 Author: Drew
+
+#Server Specifications
+These specifications are a simple starting point for the more rich server protocol which we will determine later.
+
+##Functional Specifications
+From the user's standpoint the server will be pretty much invisible. It will be the outlet through which the user can chat with all users,
+and play notes to all the users.
+
+##Technical Specifications
+For now the server will be set up to listen for connections on port 7744 (or TBD). It will use select() to do multiplexing. It will 
+store the open channels in a set structure that keeps track of which channels are open.  The server will tell the client which channel
+it is on when it connects using the command `CONNECT N`, where N is the channel number.
+Any message the server receives from a client will be relayed to all the clients who are also connected to the server.

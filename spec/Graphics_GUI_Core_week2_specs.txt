@@ -1,0 +1,7 @@
+Functional Specifications
+
+There should be spin buttons that allow the user to choose an instrument for the user and an instrument for the song. The user should also be allowed to choose different instruments. The segmentation faults for the code should be fixed when exiting a screen. Finally, all minor flaws in the week 1 assignment should be corrected. Link everything back to two functions, change_instrument and file_selection. 
+
+Technical Specifications
+
+void change_instrument ( GtkWidget *widget, GtkSpinButton *spin );

@@ -24,7 +24,5 @@ int main(int argc, char** argv) {
 	//start gtk
 	gtk_main();
 
-	gui_destroy(gui);
-
   return (EXIT_SUCCESS);
 }

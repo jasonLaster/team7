@@ -19,6 +19,7 @@ static void cb_file_select(GtkWidget *widget, GdkEventKey *kevent, gpointer data
 static void cb_subdivision_beat(gpointer data);
 static gboolean button_press ( GtkWidget *widget, GdkEvent *event );
 static void destroy( GtkWidget *widget, gpointer data);
+static gboolean delete_event( GtkWidget *widget, GdkEvent  *event, gpointer data );
 static void file_ok_sel( GtkWidget *widget, gpointer g);
 
 //CREATES AND RETURNS A NEW GUI
@@ -32,23 +33,23 @@ Gui *gui_new(void){
   GtkAdjustment *adj;
 
   //declare the widgets
-  GtkWidget  *window,
-        *menuBar,
-        *fileMenu,
-        *fileItem,
-        *songMenu,
-        *songItem,
-        *userMenu,
-        *userItem,
-        *quitItem,
-        *openItem,
-        *instrumentItem1,
-        *instrumentItem2,
-        *playButton,
-        *da,
-        *spinButton1,
-        *spinButton2,
-        *table;
+  GtkWidget   *window,
+              *menuBar,
+              *fileMenu,
+              *fileItem,
+              *songMenu,
+              *songItem,
+              *userMenu,
+              *userItem,
+              *quitItem,
+              *openItem,
+              *instrumentItem1,
+              *instrumentItem2,
+              *playButton,
+              *da,
+              *spinButton1,
+              *spinButton2,
+              *table;
 
   GTimer    *timer;
 
@@ -56,7 +57,7 @@ Gui *gui_new(void){
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_widget_set_size_request (GTK_WIDGET (window), WINDOWSIZE, WINDOWSIZE);
   gtk_window_set_title (GTK_WINDOW (window), "Psyche");
-  g_signal_connect (window, "destroy", G_CALLBACK (gtk_main_quit), NULL);
+  g_signal_connect (window, "destroy", G_CALLBACK (destroy), NULL);
 
 	table = gtk_table_new (30, 30, TRUE);
 	gtk_container_add (GTK_CONTAINER (window), table);
@@ -111,7 +112,7 @@ Gui *gui_new(void){
   gtk_menu_shell_append (GTK_MENU_SHELL (userMenu), instrumentItem2);
 
   //setup the menu item call backs
-  g_signal_connect_swapped (quitItem, "activate", G_CALLBACK (gtk_main_quit), (gpointer) NULL);
+  g_signal_connect_swapped (quitItem, "activate", G_CALLBACK (delete_event), gui);
   g_signal_connect_swapped (openItem, "activate", G_CALLBACK (cb_file_select), gui);
 
   //set up the drawing area
@@ -165,8 +166,38 @@ void gui_destroy(Gui *gui){
  * currently being played it turns it off. If the escape key is pressed, the app will quit.
  */
 static void destroy( GtkWidget *widget, gpointer data) {
-      gtk_main_quit ();
+  Gui *gui = (Gui *) data;
+  gui_destroy(gui);
+  gtk_main_quit ();
+
 }
+
+
+//FROM THE HELLO WORLD GTK TUTORIAL AT http://developer.gnome.org/gtk-tutorial/stable/c39.html#SEC-HELLOWORLD
+static gboolean delete_event( GtkWidget *widget,
+                              GdkEvent  *event,
+                              gpointer   data )
+{
+    /* If you return FALSE in the "delete-event" signal handler,
+     * GTK will emit the "destroy" signal. Returning TRUE means
+     * you don't want the window to be destroyed.
+     * This is useful for popping up 'are you sure you want to quit?'
+     * type dialogs. */
+
+  g_print ("delete event occurred\n");
+
+  //added by Drew J.
+  Gui *gui = (Gui *) data;
+  gui_destroy(gui);
+
+
+
+    /* Change TRUE to FALSE and the main window will be destroyed with
+     * a "delete-event". */
+
+  return FALSE;
+}
+
 
 static void cb_file_select(GtkWidget *widget, GdkEventKey *kevent, gpointer data) {
       GtkWidget *filew;
@@ -198,7 +229,7 @@ static void cb_keypress(GtkWidget *widget, GdkEventKey *kevent, gpointer data){
     gtk_main_quit();
   }
   else if (note != NOVALUE){
-    
+
     if(!instrument_note_on(core->player, note)) {
        instrument_set_note_on(core->player->notes, note);
        print_keys_pressed(core);
@@ -250,7 +281,7 @@ static void cb_subdivision_beat(gpointer data) {
     for(int note = 0; note < 128; note++) {
 
       if (instrument_first_note(core->song, note, core->current_subdiv - 1)){
-        
+
         fluid_synth_noteon(core->synth, core->song->channel, note, 100);
 
         //make random later
