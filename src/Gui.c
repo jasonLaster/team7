@@ -155,7 +155,8 @@ Gui *gui_new(void){
 // EVENTS /////////////////////////
 ///////////////////////////////////
 
-
+/*
+ */
 static void click_open_song(GtkWidget *widget, GdkEventKey *kevent, gpointer data) {
 
   // Get GUI and FILE_SELECTOR
@@ -196,6 +197,9 @@ static void click_open_song(GtkWidget *widget, GdkEventKey *kevent, gpointer dat
   gtk_widget_show (file_selector);
 }
 
+
+/*
+ */
 static gboolean button_press ( GtkWidget *widget, GdkEvent *event ) {
        if (event -> type == GDK_BUTTON_PRESS) {
            GdkEventButton *bevent = (GdkEventButton *) event;
@@ -297,9 +301,6 @@ static void cb_load_song(GtkWidget *widget, gpointer g) {
   Gui* gui = (Gui *) g;
   GtkFileSelection *file_selector = gui->filew;
   char* selected_filename = gtk_file_selection_get_filename(file_selector);
-
-  g_print("Selected filename: %s\n", selected_filename);
-  printf("current subdiv: %d\n", gui->core->current_subdiv);
   core_load_song(gui->core, selected_filename);
 }
 
