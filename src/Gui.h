@@ -4,11 +4,23 @@
 
 #include "Core.h"
 
+typedef struct login Login;
+struct login{
+	GtkEntry *server_addr;
+	GtkEntry *server_port;
+	GtkEntry *username;
+};
+
+
 typedef struct gui Gui;
 struct gui{
 	Core	*core;
 	GtkFileSelection *filew;
+	Login *login;
 };
+
+
+
 
 Gui *gui_new(void);
 void gui_destroy(Gui *gui);

@@ -14,6 +14,7 @@
 
 /* EVENTS */
 static void click_open_song(GtkWidget *widget, GdkEventKey *kevent, gpointer data);
+static void click_login(GtkWidget *widget, GdkEventKey *kevent, gpointer data);
 // static gboolean button_press(GtkWidget *widget, GdkEvent *event );
 
 /* CALLBACKS */
@@ -22,6 +23,8 @@ static void cb_keyrelease(GtkWidget *widget, GdkEventKey *kevent, gpointer data)
 static void cb_subdivision_beat(gpointer data);
 static void cb_play_song(GtkWidget *widget, GdkEventKey *kevent, gpointer data);
 static void cb_load_song(GtkWidget *widget, gpointer g);
+static void cb_server_login(GtkWidget *widget, gpointer g);
+
 
 /* DESTROY METHODS */
 static void destroy( GtkWidget *widget, gpointer data);
@@ -35,6 +38,7 @@ Gui *gui_new(void){
   Gui *gui;
   NEW(gui, Gui);
   gui->core = core_new("ascii_notes.map");
+  gui->login = (Login *) malloc(sizeof(Login));
 
   // GtkAdjustment *adj;
 
@@ -82,17 +86,17 @@ Gui *gui_new(void){
   gtk_widget_show (menuBar);
 
   //setup the menu items
-  fileItem = gtk_menu_item_new_with_label ("File");
-  songItem = gtk_menu_item_new_with_label ("Song");
-  userItem = gtk_menu_item_new_with_label ("User");
+  fileItem = gtk_menu_item_new_with_label("File");
+  songItem = gtk_menu_item_new_with_label("Song");
+  userItem = gtk_menu_item_new_with_label("User");
   gtk_widget_show(fileItem);
   gtk_widget_show(songItem);
   gtk_widget_show(userItem);
 
   //put the main menu items in the menu bar
-  gtk_menu_shell_append (GTK_MENU_SHELL (menuBar), fileItem);
-  gtk_menu_shell_append (GTK_MENU_SHELL (menuBar), songItem);
-  gtk_menu_shell_append (GTK_MENU_SHELL (menuBar), userItem);
+  gtk_menu_shell_append(GTK_MENU_SHELL (menuBar), fileItem);
+  gtk_menu_shell_append(GTK_MENU_SHELL (menuBar), songItem);
+  gtk_menu_shell_append(GTK_MENU_SHELL (menuBar), userItem);
 
   //setup the sub menus
   fileMenu = gtk_menu_new ();
@@ -100,11 +104,11 @@ Gui *gui_new(void){
   userMenu = gtk_menu_new ();
 
   //setup the sub menu items
-  quitItem = gtk_menu_item_new_with_label ("Quit");
-  openItem = gtk_menu_item_new_with_label ("Open");
-  loginItem = gtk_menu_item_new_with_label ("Log in");
-  instrumentItem1 = gtk_menu_item_new_with_label ("Instrument");
-  instrumentItem2 = gtk_menu_item_new_with_label ("Instrument");
+  quitItem = gtk_menu_item_new_with_label("Quit");
+  openItem = gtk_menu_item_new_with_label("Open");
+  loginItem = gtk_menu_item_new_with_label("Login");
+  instrumentItem1 = gtk_menu_item_new_with_label("Instrument");
+  instrumentItem2 = gtk_menu_item_new_with_label("Instrument");
   gtk_widget_show(quitItem);
   gtk_widget_show(openItem);
   gtk_widget_show(loginItem);
@@ -118,16 +122,17 @@ Gui *gui_new(void){
   gtk_menu_item_set_submenu(GTK_MENU_ITEM (userItem) , userMenu);
 
   //put the sub menu items in the proper menus
-  gtk_menu_append (GTK_MENU (fileMenu), quitItem);
-  gtk_menu_append (GTK_MENU (fileMenu), loginItem);
-  gtk_menu_prepend (GTK_MENU_SHELL (fileMenu), openItem);
+  gtk_menu_append(GTK_MENU (fileMenu), loginItem);
+  gtk_menu_append(GTK_MENU_SHELL (fileMenu), openItem);
+  gtk_menu_append(GTK_MENU (fileMenu), quitItem);
 
-  gtk_menu_shell_append (GTK_MENU_SHELL (songMenu), instrumentItem1);
-  gtk_menu_shell_append (GTK_MENU_SHELL (userMenu), instrumentItem2);
+  gtk_menu_shell_append(GTK_MENU_SHELL (songMenu), instrumentItem1);
+  gtk_menu_shell_append(GTK_MENU_SHELL (userMenu), instrumentItem2);
 
   //setup the menu item call backs
   g_signal_connect(GTK_OBJECT(quitItem), "activate", G_CALLBACK(delete_event), gui); // the data goes in the kevent, this bad but whatever
   g_signal_connect(GTK_OBJECT(openItem), "activate", G_CALLBACK(click_open_song), gui); // the data goes in the kevent, this bad but whatever
+  g_signal_connect(GTK_OBJECT(loginItem), "activate", G_CALLBACK(click_login), gui); // the data goes in the kevent, this bad but whatever
 
   //set up the drawing area
   da = gtk_drawing_area_new ();
@@ -198,6 +203,51 @@ static void click_open_song(GtkWidget *widget, GdkEventKey *kevent, gpointer dat
 
   // SHOW file selector
   gtk_widget_show (file_selector);
+}
+
+
+/*
+ */
+static void click_login(GtkWidget *widget, GdkEventKey *kevent, gpointer data) {
+  // Get GUI and DIALOG
+  Gui* gui = (Gui*) kevent;
+  GtkDialog *dialog;
+  GtkButton *login;
+
+  dialog = gtk_dialog_new();
+  gtk_window_set_default_size(dialog, 300,150);
+
+  // create all the fields
+  gui->login->server_addr = gtk_entry_new();
+  gui->login->server_port = gtk_entry_new();
+  gui->login->username = gtk_entry_new();
+  gtk_entry_set_text(gui->login->server_addr, "server address");
+  gtk_entry_set_text(gui->login->server_port, "server port");
+  gtk_entry_set_text(gui->login->username, "username");
+  gtk_box_pack_start(dialog->vbox, gui->login->server_addr, TRUE, TRUE, 0);
+  gtk_box_pack_start(dialog->vbox, gui->login->server_port, TRUE, TRUE, 0);
+  gtk_box_pack_start(dialog->vbox, gui->login->username, TRUE, TRUE, 0);
+
+  // create login button
+  login = gtk_dialog_add_button(dialog, "Login", 1);
+
+  // LOGIN button clicked -> call cb_server_login
+  g_signal_connect(
+    (GtkButton*) login,
+    "clicked",
+    G_CALLBACK (cb_server_login),
+    gui
+   );
+
+  // LOGIN button clicked -> close dialog
+   g_signal_connect_swapped(
+     (GtkButton*) login,
+     "clicked",
+     G_CALLBACK (gtk_widget_destroy),
+     dialog
+    );
+
+  gtk_widget_show_all(dialog);
 }
 
 
@@ -306,6 +356,19 @@ static void cb_load_song(GtkWidget *widget, gpointer g) {
   char* selected_filename = gtk_file_selection_get_filename(file_selector);
   core_load_song(gui->core, selected_filename);
 }
+
+/*
+ */
+static void cb_server_login(GtkWidget *widget, gpointer g) {
+  Gui* gui = (Gui *) g;
+  
+  printf("server addr: %s\n", gtk_entry_get_text(gui->login->server_addr));
+  printf("server port: %s\n", gtk_entry_get_text(gui->login->server_port));
+  printf("username: %s\n", gtk_entry_get_text(gui->login->username));
+  printf("server login\n");
+}
+
+
 
 
 ///////////////////////////////////
