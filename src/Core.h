@@ -18,6 +18,7 @@ struct core {
 
 /* Prototypes */
 Core* core_new(const char *keyboard_map_file);
+void core_load_song(Core* core, char* const songfile);
 void core_destroy(Core* core);
 void core_play_song(Core* core);
 void print_keys_pressed(Core* core);

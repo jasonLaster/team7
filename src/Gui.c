@@ -297,10 +297,10 @@ static void cb_load_song(GtkWidget *widget, gpointer g) {
   Gui* gui = (Gui *) g;
   GtkFileSelection *file_selector = gui->filew;
   char* selected_filename = gtk_file_selection_get_filename(file_selector);
-  
+
   g_print("Selected filename: %s\n", selected_filename);
   printf("current subdiv: %d\n", gui->core->current_subdiv);
-  // cb_load_song(gui->core, selected_filename);
+  core_load_song(gui->core, selected_filename);
 }
 
 
@@ -310,8 +310,7 @@ static void cb_load_song(GtkWidget *widget, gpointer g) {
 
 
 static void destroy(GtkWidget *widget, gpointer data) {
-  Gui *gui = (Gui *) data;
-  gui_destroy(gui);
+
   gtk_main_quit ();
 
 }
@@ -319,12 +318,7 @@ static void destroy(GtkWidget *widget, gpointer data) {
 /*
  */
 static gboolean delete_event(GtkWidget *widget, GdkEvent  *event, gpointer data ) {
-
-  g_print ("delete event occurred\n");
-  Gui *gui = (Gui *) data;
-  // gui_destroy(gui);
-
-  // FALSE => destroy window, TRUE => do nothing 
+  gtk_main_quit();
   return FALSE;
 }
 
