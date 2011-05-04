@@ -14,7 +14,7 @@
 
 /* EVENTS */
 static void click_open_song(GtkWidget *widget, GdkEventKey *kevent, gpointer data);
-static gboolean button_press(GtkWidget *widget, GdkEvent *event );
+// static gboolean button_press(GtkWidget *widget, GdkEvent *event );
 
 /* CALLBACKS */
 static void cb_keypress(GtkWidget *widget, GdkEventKey *kevent, gpointer data);
@@ -36,7 +36,7 @@ Gui *gui_new(void){
   NEW(gui, Gui);
   gui->core = core_new("ascii_notes.map");
 
-  GtkAdjustment *adj;
+  // GtkAdjustment *adj;
 
   //declare the widgets
   GtkWidget   *window,
@@ -49,12 +49,13 @@ Gui *gui_new(void){
               *userItem,
               *quitItem,
               *openItem,
+              *loginItem,
               *instrumentItem1,
               *instrumentItem2,
               *playButton,
               *da,
-              *spinButton1,
-              *spinButton2,
+              // *spinButton1,
+              // *spinButton2,
               *table;
 
   GTimer    *timer;
@@ -82,11 +83,11 @@ Gui *gui_new(void){
 
   //setup the menu items
   fileItem = gtk_menu_item_new_with_label ("File");
-  gtk_widget_show(fileItem);
   songItem = gtk_menu_item_new_with_label ("Song");
-  gtk_widget_show(songItem);
   userItem = gtk_menu_item_new_with_label ("User");
-  gtk_widget_show(userItem);//group together and put it somewhere else
+  gtk_widget_show(fileItem);
+  gtk_widget_show(songItem);
+  gtk_widget_show(userItem);
 
   //put the main menu items in the menu bar
   gtk_menu_shell_append (GTK_MENU_SHELL (menuBar), fileItem);
@@ -100,13 +101,16 @@ Gui *gui_new(void){
 
   //setup the sub menu items
   quitItem = gtk_menu_item_new_with_label ("Quit");
-  gtk_widget_show(quitItem);
   openItem = gtk_menu_item_new_with_label ("Open");
-  gtk_widget_show(openItem);
+  loginItem = gtk_menu_item_new_with_label ("Log in");
   instrumentItem1 = gtk_menu_item_new_with_label ("Instrument");
-  gtk_widget_show(instrumentItem1);
   instrumentItem2 = gtk_menu_item_new_with_label ("Instrument");
+  gtk_widget_show(quitItem);
+  gtk_widget_show(openItem);
+  gtk_widget_show(loginItem);
+  gtk_widget_show(instrumentItem1);
   gtk_widget_show(instrumentItem2);
+
 
   //links the menu to the items
   gtk_menu_item_set_submenu(GTK_MENU_ITEM (fileItem) , fileMenu);
@@ -115,7 +119,9 @@ Gui *gui_new(void){
 
   //put the sub menu items in the proper menus
   gtk_menu_append (GTK_MENU (fileMenu), quitItem);
+  gtk_menu_append (GTK_MENU (fileMenu), loginItem);
   gtk_menu_prepend (GTK_MENU_SHELL (fileMenu), openItem);
+
   gtk_menu_shell_append (GTK_MENU_SHELL (songMenu), instrumentItem1);
   gtk_menu_shell_append (GTK_MENU_SHELL (userMenu), instrumentItem2);
 
@@ -161,13 +167,10 @@ static void click_open_song(GtkWidget *widget, GdkEventKey *kevent, gpointer dat
 
   // Get GUI and FILE_SELECTOR
   Gui* gui = (Gui*) kevent;
-  Core* core = gui->core;
   GtkWidget *file_selector;
-
   file_selector = gtk_file_selection_new ("Please select a file for editing.");
   gui->filew = file_selector;
 
-  // printf("current subdiv %d\n", core->current_subdiv);
 
   // OK button -> store filename
   g_signal_connect(
@@ -200,14 +203,14 @@ static void click_open_song(GtkWidget *widget, GdkEventKey *kevent, gpointer dat
 
 /*
  */
-static gboolean button_press ( GtkWidget *widget, GdkEvent *event ) {
-       if (event -> type == GDK_BUTTON_PRESS) {
-           GdkEventButton *bevent = (GdkEventButton *) event;
-           gtk_menu_popup (GTK_MENU (widget), NULL, NULL, NULL, NULL, bevent->button, bevent->time);
-           return TRUE;
-       }
-       return FALSE;
-}
+// static gboolean button_press ( GtkWidget *widget, GdkEvent *event ) {
+//        if (event -> type == GDK_BUTTON_PRESS) {
+//            GdkEventButton *bevent = (GdkEventButton *) event;
+//            gtk_menu_popup (GTK_MENU (widget), NULL, NULL, NULL, NULL, bevent->button, bevent->time);
+//            return TRUE;
+//        }
+//        return FALSE;
+// }
 
 /* CB_KEYPRESS is a piano callback function that is called everytime gtk responds to a keypress
  * from the user. When called, cb_keypress figures out which note the user is playing and if the note is not
