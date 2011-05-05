@@ -73,22 +73,28 @@ Gui *gui_new(void){
   // setup chat window components
   GtkWidget* chat_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   GtkWidget* vbox = gtk_vbox_new(FALSE, 10);
-  GtkWidget* scrollable_region = gtk_layout_new(NULL, NULL);
-  GtkWidget *text_view = gtk_text_view_new();
-  GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW (text_view));
+  // GtkWidget* scrollable_region = gtk_layout_new(NULL, NULL);
+  GtkWidget *chat_log = gtk_text_view_new();
+  GtkTextBuffer *chat_log_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW (chat_log));
+  GtkWidget *chat_input = gtk_text_view_new();
+  GtkTextBuffer *chat_input_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW (chat_input));
+  
+  
 
   // layout chat window components
   gtk_container_add(GTK_CONTAINER(chat_window), vbox);
-  gtk_box_pack_start(vbox, scrollable_region, FALSE, FALSE, 0);
-  gtk_layout_put(scrollable_region, text_view, 0,0);
+  gtk_box_pack_start(vbox, chat_log, TRUE, FALSE, 0);
+  gtk_box_pack_start(vbox, chat_input, FALSE, FALSE, 0);
+  // gtk_layout_put(scrollable_region, text_view, 0,0);
 
   // set chat window component parameters
   // gtk_layout_get_size(scrollable_region, 300, 700);
-  // gtk_window_set_title(chat_window, "Chat");
-  // gtk_window_resize(chat_window, 300, 800);
-  // // gtk_editable_set_editable();
-  // gtk_text_buffer_set_text(buffer, "Hello, this is some text", -1);
-  // gtk_widget_show_all(chat_window);
+  gtk_window_set_title(chat_window, "Chat");
+  gtk_window_resize(chat_window, 300, 800);
+  gtk_editable_set_editable(chat_log_buffer, FALSE);
+  gtk_text_buffer_set_text(chat_log_buffer, "Hello, this is some text", -1);
+  gtk_text_buffer_set_text(chat_input_buffer, "Hello, this is some text", -1);
+  gtk_widget_show_all(chat_window);
 
 
   // setup layout table for the primary window
