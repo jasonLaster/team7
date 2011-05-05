@@ -3,6 +3,9 @@
 #define GUI
 
 #include "Core.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <gtk/gtk.h>
 
 typedef struct login Login;
 struct login{

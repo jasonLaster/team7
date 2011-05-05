@@ -7,17 +7,6 @@
 
 #include "Graphics.h"
 
-float boxv[][3] = {
-	{ -0.5, -0.5, -0.5 },
-	{  0.5, -0.5, -0.5 },
-	{  0.5,  0.5, -0.5 },
-	{ -0.5,  0.5, -0.5 },
-	{ -0.5, -0.5,  0.5 },
-	{  0.5, -0.5,  0.5 },
-	{  0.5,  0.5,  0.5 },
-	{ -0.5,  0.5,  0.5 }
-};
-
 static float ang = 30.;
 static int duration[NUM_MIDI];
 
@@ -26,8 +15,6 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
 {
 	GdkGLContext *glcontext = gtk_widget_get_gl_context (da);
 	GdkGLDrawable *gldrawable = gtk_widget_get_gl_drawable (da);
-
-	// g_print (" :: expose\n");
 
 	if (!gdk_gl_drawable_gl_begin (gldrawable, glcontext))
 	{
@@ -42,26 +29,13 @@ expose (GtkWidget *da, GdkEventExpose *event, gpointer user_data)
 
 	glShadeModel(GL_FLAT);
 
-        /*glColor4f(0.0, 1.0, 0.0, ALPHA);
-        fourth_note(0.5, 0.2, 0, 0.1);
-        glColor4f(1.0, 0.0, 0.0, ALPHA);
-        full_note(0, 0.2, 0, 0.1);
-        glColor4f(0.0, 0.0, 1.0, ALPHA);
-        half_note(1, 0.2, 0, 0.1);
-        glColor4f(1.0, 0.0, 1.0, ALPHA);
-        other_notes(-0.5, 0.2, 0, 0.1, 4);*/
-
         int count = 0;
         for(int i = 0; i < NUM_MIDI; i ++) {
               if (duration[i] != 0) {
-                  draw_note(duration[i], -0.8, -0.8, -(count * 0.3));
+                  draw_note(duration[i], -0.5, -0.5, -(count * 0.3));
                   count ++;
               }
         }
-
-//        draw_note(356, -0.8, -0.8, 0);
-//        draw_note(18, -0.8, -0.8, -0.3);
-//        draw_note(253, -0.8, -0.8, -0.6);
 
 	glPopMatrix ();
 
@@ -101,12 +75,12 @@ configure (GtkWidget *da, GdkEventConfigure *event, gpointer user_data)
 	}
 
 	glLoadIdentity();
-	glViewport (0, 0, da->allocation.width, da->allocation.height);
+	glViewport (5, 5, da->allocation.width, da->allocation.height);
 	glOrtho (-10,10,-10,10,-20050,10000);
 	glEnable (GL_BLEND);
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glScalef (10., 10., 10.);
+	glScalef (8., 8., 10.);
 	
 	gdk_gl_drawable_gl_end (gldrawable);
 
