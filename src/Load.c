@@ -136,6 +136,7 @@ static int note_cmp(char note, int* rel_note, int octcount) {
 //local function and send the address.
 void parse_song(char* const file, int *notes_array, int length) {
   char c;
+  char pr = ' ';
   char note;
   char relative[100];
 
@@ -178,6 +179,7 @@ void parse_song(char* const file, int *notes_array, int length) {
         octcount = 0;
         shift = 0;
         notation = 0;
+        pr = c;
       }
     }
     else {
@@ -210,9 +212,11 @@ void parse_song(char* const file, int *notes_array, int length) {
         number = c - '0';
       else if (c >= '0' && c <= '9')
         number = number * 10 + (c - '0');
+      else if (c == '%' && pr == '\n')
+        for(char ch = ' '; ch != '\n' && ch != EOF; ch = fgetc(song_file));
     }
   }
-  
+
   fclose(song_file);
 }
 
