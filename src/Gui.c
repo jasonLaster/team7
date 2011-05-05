@@ -65,13 +65,13 @@ Gui *gui_new(void){
   GTimer    *timer;
 
   //setup the window
-  window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_widget_set_size_request (GTK_WIDGET (window), WINDOWSIZE, WINDOWSIZE);
-  gtk_window_set_title (GTK_WINDOW (window), "Psyche");
-  g_signal_connect (window, "destroy", G_CALLBACK (destroy), NULL);
+  window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  gtk_widget_set_size_request(GTK_WIDGET (window), WINDOWSIZE, WINDOWSIZE);
+  gtk_window_set_title(GTK_WINDOW (window), "Psyche");
+  g_signal_connect(window, "destroy", G_CALLBACK (destroy), NULL);
 
-	table = gtk_table_new (30, 30, TRUE);
-	gtk_container_add (GTK_CONTAINER (window), table);
+	table = gtk_table_new(30, 30, TRUE);
+	gtk_container_add(GTK_CONTAINER (window), table);
 
   /*
     setup the spin button and adjustment
@@ -117,9 +117,9 @@ Gui *gui_new(void){
 
 
   //links the menu to the items
-  gtk_menu_item_set_submenu(GTK_MENU_ITEM (fileItem) , fileMenu);
-  gtk_menu_item_set_submenu(GTK_MENU_ITEM (songItem) , songMenu);
-  gtk_menu_item_set_submenu(GTK_MENU_ITEM (userItem) , userMenu);
+  gtk_menu_item_set_submenu(GTK_MENU_ITEM (fileItem), fileMenu);
+  gtk_menu_item_set_submenu(GTK_MENU_ITEM (songItem), songMenu);
+  gtk_menu_item_set_submenu(GTK_MENU_ITEM (userItem), userMenu);
 
   //put the sub menu items in the proper menus
   gtk_menu_append(GTK_MENU (fileMenu), loginItem);
@@ -151,7 +151,7 @@ Gui *gui_new(void){
   g_timeout_add(16, (GSourceFunc) cb_subdivision_beat, gui);
 
   //show the window
-  gtk_widget_show_all (window);
+  gtk_widget_show_all(window);
 
   //set up the timer
   timer = g_timer_new();
