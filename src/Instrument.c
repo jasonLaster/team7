@@ -26,7 +26,7 @@ Instrument* instrument_new(int channel, int size) {
   return instrument;
 }
 
-// NEED LOAD FILE TO WORK
+
 /*
  */
 Instrument* instrument_new_from_song(int channel, char* const song_file) {
