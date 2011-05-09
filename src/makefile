@@ -1,6 +1,7 @@
 OBJS =  core.o mapii.o notemapping.o synth.o instrument.o load.o gui.o support.o graphics.o graphic_note.o client.o
 BINS =  core mapii notemapping synth instrument load gui support graphic_note graphics main
 PROGS = Core.c Mapii.c NoteMapping.c Synth.c Instrument.c Load.c Support.c Graphic_Note.c Graphics.c
+STDERR = 2>> output
 
 UNAME := $(shell uname -s)
 
@@ -25,41 +26,44 @@ endif
 all: psyche
 
 main.o:  Main.c
-	gcc -c $(CFLAGS) -o main.o Main.c $(INCLUDES)
+	gcc -c $(CFLAGS) -o main.o Main.c $(INCLUDES) $(STDERR)
 
 notemapping.o: NoteMapping.c NoteMapping.h Instrument.h
-	gcc -c $(CFLAGS) -o notemapping.o NoteMapping.c $(INCLUDES)
+	gcc -c $(CFLAGS) -o notemapping.o NoteMapping.c $(INCLUDES) $(STDERR)
 
 instrument.o: Instrument.c Instrument.h
-	gcc -c $(CFLAGS) -o instrument.o Instrument.c $(INCLUDES)
+	gcc -c $(CFLAGS) -o instrument.o Instrument.c $(INCLUDES) $(STDERR)
 
 mapii.o:  Mapii.c Mapii.h
-	gcc -c $(CFLAGS) -o mapii.o Mapii.c $(INCLUDES)
+	gcc -c $(CFLAGS) -o mapii.o Mapii.c $(INCLUDES) $(STDERR)
 
 synth.o:  Synth.c Synth.h
-	gcc -c $(CFLAGS) -o synth.o Synth.c $(INCLUDES)
+	gcc -c $(CFLAGS) -o synth.o Synth.c $(INCLUDES) $(STDERR)
 
 load.o:  Load.c Load.h
-	gcc -c $(CFLAGS) -o load.o Load.c $(INCLUDES)
+	gcc -c $(CFLAGS) -o load.o Load.c $(INCLUDES) $(STDERR)
 
 core.o:  Core.c Core.h
-	gcc -c $(CFLAGS) -o core.o Core.c $(INCLUDES)
+	gcc -c $(CFLAGS) -o core.o Core.c $(INCLUDES) $(STDERR)
 
 gui.o: Gui.c Gui.h
-	gcc -c $(CFLAGS) -o gui.o Gui.c $(INCLUDES)
+	gcc -c $(CFLAGS) -o gui.o Gui.c $(INCLUDES) $(STDERR)
 
 graphic_note.o: Graphic_Note.c Graphic_Note.h
-	gcc -c $(CFLAGS) -o graphic_note.o Graphic_Note.c $(INCLUDES)
+	gcc -c $(CFLAGS) -o graphic_note.o Graphic_Note.c $(INCLUDES) $(STDERR)
 
 graphics.o:   Graphics.c Graphics.h
-	gcc -c $(CFLAGS) -o graphics.o Graphics.c $(INCLUDES)
+	gcc -c $(CFLAGS) -o graphics.o Graphics.c $(INCLUDES) $(STDERR)
 
 support.o:  Support.c Support.h
-	gcc -c $(CFLAGS) -o support.o Support.c $(INCLUDES)
+	gcc -c $(CFLAGS) -o support.o Support.c $(INCLUDES) $(STDERR)
 
 psyche: main.o $(OBJS)
-	gcc -o psyche main.o $(OBJS) $(LIBS)
-	#pandoc -o documentation.html documentation
+	gcc -o psyche main.o $(OBJS) $(LIBS) >> output
+	ruby ../utils/ignore-warnings.rb
+	rm output
+	less clean_output
+
 
 clean:
 	rm -f $(BINS)
