@@ -8,44 +8,54 @@
 #include "client.h"
 #include "PsycheMacros.h"
 
-int connect(int port) {
-    int sockfd;
-    struct sockaddr_in servaddr;
-    char sendline[MAXLINE], recvline[MAXLINE];
+Client *client_new(){
+  Client *client;
+  NEW(client, Client);
+  return(client);
+}
+
+int client_connect(Client *client) {
 
     // Create a socket for the client
     // If sockfd<0 there was an error in the creation of the socket
-    if ((sockfd = socket (AF_INET, SOCK_STREAM, 0)) <0) {
+    if ((client->sockfd = socket (AF_INET, SOCK_STREAM, 0)) <0) {
 
       perror("Problem in creating the socket");
       return(SOCKET_CREATE_ERROR);
     }
 
     // Creation of the socket
-    memset(&servaddr, 0, sizeof(servaddr));
-    servaddr.sin_family = AF_INET;
-    servaddr.sin_addr.s_addr = inet_addr(argv[1]); //what do we put here?
-    servaddr.sin_port =  htons(SERV_PORT); //convert to big-endian order
+    memset(&(client->servaddr), 0, sizeof(client->servaddr));
+    client->servaddr.sin_family = AF_INET;
+    client->servaddr.sin_addr.s_addr = inet_addr(SERV_ADDR); //what do we put here?
+    client->servaddr.sin_port =  htons(SERV_PORT); //convert to big-endian order
 
     // Connection of the client to the socket
-    if (connect(sockfd, (struct sockaddr *) &servaddr, sizeof(servaddr)) < 0) {
+    if (connect(client->sockfd, (struct sockaddr *) &(client->servaddr), sizeof(client->servaddr)) < 0) {
 
       perror("Problem in connecting to the server");
       exit(SOCKET_CONNECT_ERROR);
     }
 
-    while (fgets(sendline, MAXLINE, stdin) != NULL) {
+    return(SOCKET_CONNECT_SUCCESS);
+}
 
-        send(sockfd, sendline, strlen(sendline), 0);
+char *client_listen(Client *client){
 
-        if (recv(sockfd, recvline, MAXLINE,0) == 0) {
-            //error: server terminated prematurely
-            perror("The server terminated prematurely");
-            exit(4);
-        }
-        printf("%s", "String received from the server: ");
-        fputs(recvline, stdout);
-    }
+  if (recv(client->sockfd, client->recvline, MAXLINE, 0) == 0) {
+    //error: server terminated prematurely
+    perror("The server terminated prematurely");
+    return(NULL);
+  }
 
-    exit(0);
+  return (client->recvline);
+
+}
+
+int client_send(Client *client, char *msg){
+  strcpy(msg, client->sendline);
+
+  send(client->sockfd, client->sendline, strlen(client->sendline), 0);
+
+  return(MSG_SENT);
 }

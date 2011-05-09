@@ -7,7 +7,7 @@
 
 #include "Graphics.h"
 
-static float ang = 30.;
+static float ang = 5.;
 static int duration[NUM_MIDI];
 
 static gboolean

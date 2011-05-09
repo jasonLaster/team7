@@ -3,7 +3,7 @@
 static void set_empty_array(int *notes_array, int length);
 static void update_song(int midi, int start, double duration , int *song);
 static void condition_update (char note, double prev, int count, int notation, int octcount, double number, int *notes_array);
-static int note_cmp(char note, int* rel_note, int octcount);
+static int note_cmp(char note, int* rel_note, int octcount, int rel_octcount);
 
 //opens the file and calculates the length of the song
 //returns the length as a double value.
@@ -111,24 +111,34 @@ static void condition_update(char note, double prev, int count, int notation, in
 }
 
 //finds the nearest octave for the note
-static int note_cmp(char note, int* rel_note, int octcount) {
-    int low_midi;
-    int high_midi;
-    int init_oct;
+static int note_cmp(char note, int* rel_note, int octcount, int rel_octcount) {
+    double low_midi;
+    double high_midi;
+    double reg_midi;
 
-    init_oct = (int) *rel_note / 12 - 1;
-    low_midi = core_note_to_midi(note, init_oct, 0);
-    high_midi = core_note_to_midi(note, (init_oct + 1), 0);
+    low_midi = core_note_to_midi(note, rel_octcount - 1, 0);
+    reg_midi = core_note_to_midi(note, rel_octcount, 0);
+    high_midi = core_note_to_midi(note, rel_octcount + 1, 0);
 
-    if((*rel_note - low_midi) < (high_midi - *rel_note)) {
-       octcount = init_oct + octcount - 1;
-       rel_note = &low_midi;
+    if(*rel_note > reg_midi) {
+          if((*rel_note - reg_midi) > (high_midi - *rel_note)) {
+             octcount ++;
+             high_midi += octcount * 12;
+             rel_note = (int *) &high_midi;
+          }
     }
-    else {
-       octcount = init_oct + octcount;
-       rel_note = &high_midi;
+    else if (*rel_note < reg_midi) {
+          if((reg_midi - *rel_note) > (*rel_note - low_midi)) {
+             octcount --;
+             low_midi += octcount * 12;
+             rel_note = (int *) &low_midi;
+          }
     }
-    return octcount;
+    else
+          rel_note = (int *) &reg_midi;
+          
+    return (octcount + rel_octcount);
+
 }
 
 //parses the song. needs a file because its a waste to close and open
@@ -144,6 +154,7 @@ void parse_song(char* const file, int *notes_array, int length) {
   int rel = 0;//relative switch
   int rel_note = 0; //relative midi note value
   int *rel_p;
+  int rel_octcount = 0;
   int count = 0;
 
   int notation = 0;
@@ -156,19 +167,23 @@ void parse_song(char* const file, int *notes_array, int length) {
   set_empty_array(notes_array, length);
 
   while((c = fgetc(song_file)) != EOF) {
-    if( (c == ' ' || c == '\n') && note != '{') {
+    if( (c == ' ' || c == '\n') && pr != '{') {
       if (shift >= 1) {
         printf("%c\n", note);
         if (note != 'r') {
-          if (shift == 2)
+          if (shift == 2) {
             rel_note = core_note_to_midi(note, octcount, notation);
+            rel_octcount = octcount;
+          }
           else if (rel == 1) {
-            octcount = note_cmp(note, rel_p, octcount);
-            condition_update(note, prev, count, notation, octcount, number, notes_array);
+            rel_octcount = note_cmp(note, rel_p, octcount, rel_octcount);
+            condition_update(note, prev, count, notation, rel_octcount, number, notes_array);
+            rel_note = core_note_to_midi(note, rel_octcount, notation);
           }
           else
             condition_update(note, prev, count, notation, octcount, number, notes_array);
-        }
+        }        
+        printf("rel_note %i, note %i, octcount %i, number %f, rel_count %i\n", rel_note, note, octcount, number, rel_octcount);
         if(number != 0 && shift != 2) {
           count += (1 / number) * SUBDIV;
           prev = number;

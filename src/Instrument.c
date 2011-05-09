@@ -42,7 +42,7 @@ Instrument* instrument_new_from_song(int channel, char* const song_file) {
  * or not playing a note.
  */
 int instrument_note_on(Instrument* instrument, int note) {
-  return instrument->notes[note] == 1;
+  return instrument->notes[note] == 1 || instrument ->notes[note] == 2;
 }
 
 int instrument_note_off(Instrument* instrument, int note) {

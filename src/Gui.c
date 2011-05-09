@@ -74,8 +74,8 @@ Gui *gui_new(void){
   GtkTextBuffer *chat_log_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW (chat_log));
   GtkWidget *chat_input = gtk_text_view_new();
   GtkTextBuffer *chat_input_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW (chat_input));
-  
-  
+
+
 
   // layout chat window components
   gtk_container_add(GTK_CONTAINER(chat_window), vbox);
@@ -197,7 +197,7 @@ static void click_open_song(GtkWidget *widget, GdkEventKey *kevent, gpointer dat
   // Get GUI and FILE_SELECTOR
   Gui* gui = (Gui*) kevent;
   GtkWidget *file_selector;
-  file_selector = gtk_file_selection_new ("Please select a file for editing.");
+  file_selector = gtk_file_selection_new ("Please select a file for playing.");
   gui->filew = file_selector;
 
 
@@ -302,12 +302,12 @@ static void cb_keypress(GtkWidget *widget, GdkEventKey *kevent, gpointer data){
     gtk_main_quit();
   }
   else if (note != NOVALUE){
+    increment_duration(note);
 
     if(!instrument_note_on(core->player, note)) {
        instrument_set_note_on(core->player->notes, note);
        print_keys_pressed(core);
        fluid_synth_noteon(core->synth, core->player->channel, note, 100);
-       increment_duration(note);
     }
 
     //draw_note(duration, x, x, x);
@@ -344,12 +344,19 @@ static void cb_subdivision_beat(gpointer data) {
 
     // Loop through all the notes and check to see if that note needs to be turned on or off
     for(int note = 0; note < 128; note++) {
-
-      if (instrument_first_note(core->song, note, core->current_subdiv - 1)){
+      if (instrument_note_on(core ->song, note + core->current_subdiv *128)){
+         increment_duration(note);
+      }
+      if (instrument_note_on(core ->player, note)){
+         increment_duration(note);
+      }
+      else if(core -> current_subdiv % 80 == 0)
+         delete_duration(note);
+      if (instrument_first_note(core->song, note, core->current_subdiv)){
         fluid_synth_noteon(core->synth, core->song->channel, note, 100);
       }
 
-      if (instrument_last_note(core->song, note, core->current_subdiv - 1)){
+      if (instrument_last_note(core->song, note, core->current_subdiv)){
         fluid_synth_noteoff(core->synth, core->song->channel, note);
       }
 
@@ -370,6 +377,7 @@ static void cb_play_song(GtkWidget *widget, GdkEventKey *kevent, gpointer data){
   Gui* gui = (Gui*) data;
   Core* core = gui->core;
   core_play_song(core);
+  set_zero();
 }
 
 /*
@@ -385,7 +393,7 @@ static void cb_load_song(GtkWidget *widget, gpointer g) {
  */
 static void cb_server_login(GtkWidget *widget, gpointer g) {
   Gui* gui = (Gui *) g;
-  
+
   printf("server addr: %s\n", gtk_entry_get_text(gui->login->server_addr));
   printf("server port: %s\n", gtk_entry_get_text(gui->login->server_port));
   printf("username: %s\n", gtk_entry_get_text(gui->login->username));

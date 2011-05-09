@@ -3,6 +3,7 @@
 #define GUI
 
 #include "Core.h"
+#include "client.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <gtk/gtk.h>
@@ -20,6 +21,7 @@ struct gui{
 	Core	*core;
 	GtkFileSelection *filew;
 	Login *login;
+	Client *client;
 };
 
 

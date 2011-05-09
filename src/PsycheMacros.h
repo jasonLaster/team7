@@ -22,7 +22,10 @@
 #define NOVALUE -1
 #define MAXLINE 4096 /*max text line length*/
 #define SERV_PORT 7744 /*port*/
+#define SERV_ADDR "spruce.cs.dartmouth.edu"
 #define SOCKET_CREATE_ERROR -1
 #define SOCKET_CONNECT_ERROR -2
+#define SOCKET_CONNECT_SUCCESS 0
+#define MSG_SENT 0
 
 #endif /* PSYCHEMACROS_H_ */

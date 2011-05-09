@@ -1,4 +1,4 @@
-OBJS =  core.o mapii.o notemapping.o synth.o instrument.o load.o gui.o support.o graphics.o graphic_note.o
+OBJS =  core.o mapii.o notemapping.o synth.o instrument.o load.o gui.o support.o graphics.o graphic_note.o client.o
 BINS =  core mapii notemapping synth instrument load gui support graphic_note graphics main
 PROGS = Core.c Mapii.c NoteMapping.c Synth.c Instrument.c Load.c Support.c Graphic_Note.c Graphics.c
 
@@ -73,6 +73,16 @@ doc:
 
 
 # DRIVERS
+
+# Server
+socket.o:   socket.c socket.h
+	gcc -c $(CFLAGS) -o socket.o socket.c $(INCLUDES)
+
+server.o: server.c socket.h
+	gcc -c $(CFLAGS) -o server.o server.c
+
+server:   server.o socket.o
+	gcc -o server server.o socket.o
 
 # NOTEMAPPING driver
 notemapping-driver.o: notemapping-driver.c NoteMapping.h Mapii.h Instrument.h Load.h

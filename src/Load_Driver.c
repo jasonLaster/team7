@@ -3,6 +3,7 @@
 int main () {
 
    int length = song_length("e2.pond");
-   printf("song length: %d\n", length);
+   int notes_array [length];
 
+   parse_song("e2.pond", notes_array, length);
 }
