@@ -38,6 +38,9 @@ groups.delete_if {|lines| lines.length <= 1}
 # PRINT TO SCREEN
 clean_output.puts groups.map(&:join).join("\n")
 
+clean_output.puts "\n\nHIDDEN VALUES: \n" +
+"gtk incompatible pointer type\n" +
+"ISO C enumerator values\n"
 
 
 # COLORIZE things
