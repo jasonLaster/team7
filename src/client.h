@@ -12,12 +12,16 @@
 
 typedef struct client Client;
 struct client{
-  int channel,
-      instrument;
 
-  int sockfd;
+  int channel,
+      instrument,
+      sockfd;
+
   struct sockaddr_in servaddr;
-  char sendline[MAXLINE], recvline[MAXLINE];
+
+  char  sendline[MAXLINE],
+        recvline[MAXLINE];
+
 };
 
 Client *client_new();

@@ -19,7 +19,7 @@ struct login{
 typedef struct gui Gui;
 struct gui{
 	Core	*core;
-	GtkFileSelection *filew;
+	GtkWidget *filew;
 	Login *login;
 	Client *client;
 };
@@ -29,5 +29,6 @@ struct gui{
 
 Gui *gui_new(void);
 void gui_destroy(Gui *gui);
+void gui_txt_recv(Gui *gui, char *line);
 
 #endif /* GUI */

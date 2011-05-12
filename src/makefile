@@ -64,11 +64,11 @@ psyche: main.o $(OBJS)
 	rm output
 	less clean_output
 
-
 clean:
 	rm -f $(BINS)
 	rm -f *.o
 	rm -f documentation.html ../spec/technical-spec.html ../spec/technical-spec
+	rm -f clean_output output
 
 doc:
 	ruby ../spec/build-technical-documentation.rb *.h
@@ -116,3 +116,10 @@ graphics-driver.o: Graphics_Driver.c
 
 graphics-driver: graphics-driver.o graphics.o graphic_note.o
 	gcc -o graphics-driver graphics-driver.o graphics.o graphic_note.o $(LIBS)
+	
+#CLIENT driver
+clientdriver.o: clientdriver.c
+	gcc -c $(CFLAGS) -o clientdriver.o clientdriver.c
+	
+client: clientdriver.o client.o
+	gcc -o client clientdriver.o client.o

@@ -27,7 +27,7 @@ int client_connect(Client *client) {
     // Creation of the socket
     memset(&(client->servaddr), 0, sizeof(client->servaddr));
     client->servaddr.sin_family = AF_INET;
-    client->servaddr.sin_addr.s_addr = inet_addr(SERV_ADDR); //what do we put here?
+    client->servaddr.sin_addr.s_addr = htonl(INADDR_ANY); //what do we put here?
     client->servaddr.sin_port =  htons(SERV_PORT); //convert to big-endian order
 
     // Connection of the client to the socket
@@ -36,11 +36,14 @@ int client_connect(Client *client) {
       perror("Problem in connecting to the server");
       exit(SOCKET_CONNECT_ERROR);
     }
+    fprintf(stdout, "Connecting to the server...check.\n");
 
     return(SOCKET_CONNECT_SUCCESS);
 }
 
 char *client_listen(Client *client){
+
+  fprintf(stderr, "Listening to the server...");
 
   if (recv(client->sockfd, client->recvline, MAXLINE, 0) == 0) {
     //error: server terminated prematurely
@@ -48,6 +51,7 @@ char *client_listen(Client *client){
     return(NULL);
   }
 
+  fprintf(stdout, "...check.\n");
   return (client->recvline);
 
 }
@@ -56,6 +60,7 @@ int client_send(Client *client, char *msg){
   strcpy(msg, client->sendline);
 
   send(client->sockfd, client->sendline, strlen(client->sendline), 0);
+  fprintf(stdout, "Sending ""%s"" to the server...check.\n", msg);
 
   return(MSG_SENT);
 }

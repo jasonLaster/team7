@@ -2,6 +2,7 @@
 #include "PsycheMacros.h"
 #include "Graphics.h"
 #include "Core.h"
+#include "client.h"
 #include "NoteMapping.h"
 #include "Instrument.h"
 
@@ -18,8 +19,8 @@ static void cb_keypress(GtkWidget *widget, GdkEventKey *kevent, gpointer data);
 static void cb_keyrelease(GtkWidget *widget, GdkEventKey *kevent, gpointer data);
 static void cb_subdivision_beat(gpointer data);
 static void cb_play_song(GtkWidget *widget, GdkEventKey *kevent, gpointer data);
-static void cb_load_song(GtkWidget *widget, gpointer g);
-static void cb_server_login(GtkWidget *widget, gpointer g);
+static void cb_load_song(GtkWidget *widget, gpointer data);
+static void cb_server_login(GtkWidget *widget, gpointer data);
 
 
 /* DESTROY METHODS */
@@ -35,6 +36,7 @@ Gui *gui_new(void){
   NEW(gui, Gui);
   gui->core = core_new("ascii_notes.map");
   gui->login = (Login *) malloc(sizeof(Login));
+  gui->client = client_new();
 
   // GtkAdjustment *adj;
 
@@ -235,7 +237,8 @@ static void click_open_song(GtkWidget *widget, GdkEventKey *kevent, gpointer dat
 static void click_login(GtkWidget *widget, GdkEventKey *kevent, gpointer data) {
   // Get GUI and DIALOG
   Gui* gui = (Gui*) kevent;
-  GtkDialog *dialog;
+  GtkWidget *dialog,
+            *content_area;
   GtkButton *login;
 
   dialog = gtk_dialog_new();
@@ -245,12 +248,14 @@ static void click_login(GtkWidget *widget, GdkEventKey *kevent, gpointer data) {
   gui->login->server_addr = gtk_entry_new();
   gui->login->server_port = gtk_entry_new();
   gui->login->username = gtk_entry_new();
+  content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+
   gtk_entry_set_text(gui->login->server_addr, "server address");
   gtk_entry_set_text(gui->login->server_port, "server port");
   gtk_entry_set_text(gui->login->username, "username");
-  gtk_box_pack_start(dialog->vbox, gui->login->server_addr, TRUE, TRUE, 0);
-  gtk_box_pack_start(dialog->vbox, gui->login->server_port, TRUE, TRUE, 0);
-  gtk_box_pack_start(dialog->vbox, gui->login->username, TRUE, TRUE, 0);
+  gtk_box_pack_start(content_area, gui->login->server_addr, TRUE, TRUE, 0);
+  gtk_box_pack_start(content_area, gui->login->server_port, TRUE, TRUE, 0);
+  gtk_box_pack_start(content_area, gui->login->username, TRUE, TRUE, 0);
 
   // create login button
   login = gtk_dialog_add_button(dialog, "Login", 1);
@@ -264,12 +269,7 @@ static void click_login(GtkWidget *widget, GdkEventKey *kevent, gpointer data) {
    );
 
   // LOGIN button clicked -> close dialog
-   g_signal_connect_swapped(
-     (GtkButton*) login,
-     "clicked",
-     G_CALLBACK (gtk_widget_destroy),
-     dialog
-    );
+   g_signal_connect_swapped( (GtkButton*) login, "clicked", G_CALLBACK (destroy), dialog );
 
   gtk_widget_show_all(dialog);
 }
@@ -382,8 +382,8 @@ static void cb_play_song(GtkWidget *widget, GdkEventKey *kevent, gpointer data){
 
 /*
  */
-static void cb_load_song(GtkWidget *widget, gpointer g) {
-  Gui* gui = (Gui *) g;
+static void cb_load_song(GtkWidget *widget, gpointer data) {
+  Gui* gui = (Gui *) data;
   GtkFileSelection *file_selector = gui->filew;
   char* selected_filename = gtk_file_selection_get_filename(file_selector);
   core_load_song(gui->core, selected_filename);
@@ -391,13 +391,21 @@ static void cb_load_song(GtkWidget *widget, gpointer g) {
 
 /*
  */
-static void cb_server_login(GtkWidget *widget, gpointer g) {
-  Gui* gui = (Gui *) g;
+static void cb_server_login(GtkWidget *widget, gpointer data) {
+  Gui* gui = (Gui *) data;
+  pthread_t client;
+
+  client_connect(gui->client);
+  //int iret1 = pthread_create(&client, NULL, client_listen, NULL);
 
   printf("server addr: %s\n", gtk_entry_get_text(gui->login->server_addr));
   printf("server port: %s\n", gtk_entry_get_text(gui->login->server_port));
   printf("username: %s\n", gtk_entry_get_text(gui->login->username));
   printf("server login\n");
+}
+
+void gui_txt_recv(Gui *gui, char *line){
+
 }
 
 

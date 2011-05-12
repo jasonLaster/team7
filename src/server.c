@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
          fprintf(stderr,"ERROR, Port Reserved or Invalid Port Number");
          exit(1);
      }
-     
+
      server = server_new(port_num);
      while(1) {
          server -> read_fds = server -> fdset;
@@ -28,11 +28,11 @@ int main(int argc, char *argv[]) {
                         server -> clilen = sizeof(server -> cli_addr);
                         socket_accept(server);
                    }
-                   else 
+                   else
                         socket_send(server, i);
               }
          }
      }
-     return 0;
+     return (EXIT_SUCCESS);
 }
 
