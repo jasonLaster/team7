@@ -23,9 +23,6 @@ endif
 
 all: graphics-driver
 
-graphics_helpers.o: graphics_helpers.c
-	gcc -c $(CFLAGS) -o graphics_helpers.o graphics_helpers.c $(INCLUDES)
-
 graphics.o:   graphics.c graphics.h
 	gcc -c $(CFLAGS) -o graphics.o graphics.c $(INCLUDES)
 
@@ -50,4 +47,4 @@ graphics-driver.o: graphics_driver.c
 	gcc -c $(CFLAGS) -o graphics-driver.o Graphics_Driver.c $(INCLUDES)
 
 graphics-driver: graphics-driver.o graphics.o graphics_helpers.o gui.o
-	gcc -o graphics-driver graphics-driver.o graphics.o graphics_helpers.o gui.o $(LIBS)
+	gcc -o graphics-driver graphics-driver.o graphics.o gui.o $(LIBS)
