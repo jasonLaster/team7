@@ -1,5 +1,13 @@
 #include <gtk/gtk.h>
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 #include "Graphics.h"
+=======
+#include "gui.h"
+>>>>>>> Stashed changes
+=======
+#include "gui.h"
+>>>>>>> Stashed changes
 
 int main(int argc, char **argv) {
 	GtkWidget *window;

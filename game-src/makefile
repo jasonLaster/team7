@@ -46,5 +46,13 @@ doc:
 graphics-driver.o: graphics_driver.c 
 	gcc -c $(CFLAGS) -o graphics-driver.o Graphics_Driver.c $(INCLUDES)
 
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 graphics-driver: graphics-driver.o graphics.o graphics_helpers.o gui.o
+=======
+graphics-driver: graphics-driver.o graphics.o gui.o
+>>>>>>> Stashed changes
+=======
+graphics-driver: graphics-driver.o graphics.o gui.o
+>>>>>>> Stashed changes
 	gcc -o graphics-driver graphics-driver.o graphics.o gui.o $(LIBS)
