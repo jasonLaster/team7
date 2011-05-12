@@ -7,8 +7,6 @@
 #include "Core.h"
 #include "NoteMapping.h"
 
-static void cb_load_song(Core* core, char* const songfile);
-
 /* CORE_NEW is a constructor method that takes a fluidSynth reference and an
  * asciimap_filename and builds a Piano struct and sets up gtk events for key presses and releases.
  */
@@ -25,7 +23,7 @@ Core* core_new(const char *keyboard_map_file){ //FluidSynth* fluid,
   printf("core pointer address %p\n", core);
 
   // SIMULATE load and play callbacks
-  cb_load_song(core, "e2.pond");
+  core_load_song(core, "e2.pond");
   // cb_play_song(core);
 
   return core;
@@ -34,7 +32,7 @@ Core* core_new(const char *keyboard_map_file){ //FluidSynth* fluid,
 /*
  *
  */
-static void cb_load_song(Core* core, char* const songfile) {
+void core_load_song(Core* core, char* const songfile) {
   core->song = instrument_new_from_song(15, songfile);
 }
 

@@ -3,7 +3,10 @@
 FluidR3_GM.sf2
 ./.git
 src/.gitignore
+*.o
 
 spec/technical-spec
 spec/technical-spec.html
+
+game-src/graphics-driver
 
