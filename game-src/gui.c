@@ -9,13 +9,17 @@ static void cb_timer(gpointer user_data);
 static gboolean configure(GtkWidget *da, GdkEventConfigure *event, gpointer user_data);
 
 void gui_new(GtkWidget* window, GtkWidget* da){
-  printf("hello world\n");
+
   set_up_graphics(da);
-  
-  
+    
   g_signal_connect(da, "configure-event", G_CALLBACK (configure), NULL);
 	g_signal_connect(da, "expose-event", G_CALLBACK (cb_expose), NULL);
-	
+	g_signal_connect(G_OBJECT(window), "key_press_event", G_CALLBACK(cb_keypress), NULL);
+  g_signal_connect(G_OBJECT(window), "key_release_event", G_CALLBACK(cb_keyrelease), NULL);
+  
+  g_timer_new();
+  g_timeout_add(16, cb_timer, da);
+  
 }
 
 
