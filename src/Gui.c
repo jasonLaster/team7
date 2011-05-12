@@ -11,25 +11,17 @@
 
 /* EVENTS */
 static void click_open_song(GtkWidget *widget, GdkEventKey *kevent, gpointer data);
-<<<<<<< .merge_file_ZMpch0
-static gboolean button_press(GtkWidget *widget, GdkEvent *event );
-=======
 static void click_login(GtkWidget *widget, GdkEventKey *kevent, gpointer data);
 // static gboolean button_press(GtkWidget *widget, GdkEvent *event );
->>>>>>> .merge_file_5rVZYp
 
 /* CALLBACKS */
 static void cb_keypress(GtkWidget *widget, GdkEventKey *kevent, gpointer data);
 static void cb_keyrelease(GtkWidget *widget, GdkEventKey *kevent, gpointer data);
 static void cb_subdivision_beat(gpointer data);
 static void cb_play_song(GtkWidget *widget, GdkEventKey *kevent, gpointer data);
-<<<<<<< .merge_file_ZMpch0
-static void cb_load_song(GtkWidget *widget, gpointer g);
-=======
 static void cb_load_song(GtkWidget *widget, gpointer data);
 static void cb_server_login(GtkWidget *widget, gpointer data);
 
->>>>>>> .merge_file_5rVZYp
 
 /* DESTROY METHODS */
 static void destroy( GtkWidget *widget, gpointer data);
@@ -46,14 +38,7 @@ Gui *gui_new(void){
   gui->login = (Login *) malloc(sizeof(Login));
   gui->client = client_new();
 
-<<<<<<< .merge_file_ZMpch0
-  printf("gui pointer address %p\n", gui);
-  printf("core pointer address %p\n", gui->core);
-
-  GtkAdjustment *adj;
-=======
   // GtkAdjustment *adj;
->>>>>>> .merge_file_5rVZYp
 
   //declare the widgets
   GtkWidget   *window,
@@ -171,14 +156,9 @@ Gui *gui_new(void){
   gtk_menu_shell_append(GTK_MENU_SHELL (userMenu), instrumentItem2);
 
   //setup the menu item call backs
-<<<<<<< .merge_file_ZMpch0
-  g_signal_connect(GTK_OBJECT(quitItem), "activate", G_CALLBACK(delete_event), gui);
-  g_signal_connect(GTK_OBJECT(openItem), "activate", G_CALLBACK(click_open_song), gui);
-=======
   g_signal_connect(GTK_OBJECT(quitItem), "activate", G_CALLBACK(delete_event), gui); // the data goes in the kevent, this bad but whatever
   g_signal_connect(GTK_OBJECT(openItem), "activate", G_CALLBACK(click_open_song), gui); // the data goes in the kevent, this bad but whatever
   g_signal_connect(GTK_OBJECT(loginItem), "activate", G_CALLBACK(click_login), gui); // the data goes in the kevent, this bad but whatever
->>>>>>> .merge_file_5rVZYp
 
   //set up the drawing area
   da = gtk_drawing_area_new ();
@@ -212,23 +192,6 @@ Gui *gui_new(void){
 // EVENTS /////////////////////////
 ///////////////////////////////////
 
-<<<<<<< .merge_file_ZMpch0
-
-static void click_open_song(GtkWidget *widget, GdkEventKey *kevent, gpointer data) {
-
-  // Get GUI and FILE_SELECTOR
-  Gui* gui = (Gui*) data;
-  Core* core = gui->core;
-  GtkWidget *file_selector;
-  
-  printf("gui pointer address %p\n", gui);
-  printf("core pointer address %p\n", core);
-  
-  file_selector = gtk_file_selection_new ("Please select a file for editing.");
-  gui->filew = file_selector;
-
-  // printf("current subdiv %d\n", core->current_subdiv);
-=======
 /*
  */
 static void click_open_song(GtkWidget *widget, GdkEventKey *kevent, gpointer data) {
@@ -239,7 +202,6 @@ static void click_open_song(GtkWidget *widget, GdkEventKey *kevent, gpointer dat
   file_selector = gtk_file_selection_new ("Please select a file for playing.");
   gui->filew = file_selector;
 
->>>>>>> .merge_file_5rVZYp
 
   // OK button -> store filename
   g_signal_connect(
@@ -269,17 +231,6 @@ static void click_open_song(GtkWidget *widget, GdkEventKey *kevent, gpointer dat
   gtk_widget_show (file_selector);
 }
 
-<<<<<<< .merge_file_ZMpch0
-static gboolean button_press ( GtkWidget *widget, GdkEvent *event ) {
-       if (event -> type == GDK_BUTTON_PRESS) {
-           GdkEventButton *bevent = (GdkEventButton *) event;
-           gtk_menu_popup (GTK_MENU (widget), NULL, NULL, NULL, NULL, bevent->button, bevent->time);
-           return TRUE;
-       }
-       return FALSE;
-}
-
-=======
 
 /*
  */
@@ -335,7 +286,6 @@ static void click_login(GtkWidget *widget, GdkEventKey *kevent, gpointer data) {
 //        return FALSE;
 // }
 
->>>>>>> .merge_file_5rVZYp
 /* CB_KEYPRESS is a piano callback function that is called everytime gtk responds to a keypress
  * from the user. When called, cb_keypress figures out which note the user is playing and if the note is not
  * currently being played it turns it off. If the escape key is pressed, the app will quit.
@@ -347,11 +297,6 @@ static void cb_keypress(GtkWidget *widget, GdkEventKey *kevent, gpointer data){
   int key = kevent->keyval;
   int note = core_keyboard_to_midi(core->keyboard_map, key);
 
-<<<<<<< .merge_file_ZMpch0
-  printf("gui pointer address %p\n", gui);
-
-=======
->>>>>>> .merge_file_5rVZYp
   if (key == ESCAPE) { // escape key pressed
     core_destroy(core);
     gtk_main_quit();
@@ -432,22 +377,6 @@ static void cb_play_song(GtkWidget *widget, GdkEventKey *kevent, gpointer data){
   Gui* gui = (Gui*) data;
   Core* core = gui->core;
   core_play_song(core);
-<<<<<<< .merge_file_ZMpch0
-}
-
-/*
- */
-static void cb_load_song(GtkWidget *widget, gpointer g) {
-  Gui* gui = (Gui *) g;
-  GtkFileSelection *file_selector = gui->filew;
-  char* selected_filename = gtk_file_selection_get_filename(file_selector);
-  
-  g_print("Selected filename: %s\n", selected_filename);
-  printf("current subdiv: %d\n", gui->core->current_subdiv);
-  // cb_load_song(gui->core, selected_filename);
-}
-
-=======
   set_zero();
 }
 
@@ -481,7 +410,6 @@ void gui_txt_recv(Gui *gui, char *line){
 
 
 
->>>>>>> .merge_file_5rVZYp
 
 ///////////////////////////////////
 // DESTROY ////////////////////////
@@ -489,12 +417,7 @@ void gui_txt_recv(Gui *gui, char *line){
 
 
 static void destroy(GtkWidget *widget, gpointer data) {
-<<<<<<< .merge_file_ZMpch0
-  Gui *gui = (Gui *) data;
-  gui_destroy(gui);
-=======
 
->>>>>>> .merge_file_5rVZYp
   gtk_main_quit ();
 
 }
@@ -502,17 +425,7 @@ static void destroy(GtkWidget *widget, gpointer data) {
 /*
  */
 static gboolean delete_event(GtkWidget *widget, GdkEvent  *event, gpointer data ) {
-<<<<<<< .merge_file_ZMpch0
-
-  g_print ("delete event occurred\n");
-  Gui *gui = (Gui *) data;
-  printf("gui pointer address %p\n", gui);
-  // gui_destroy(gui);
-
-  // FALSE => destroy window, TRUE => do nothing 
-=======
   gtk_main_quit();
->>>>>>> .merge_file_5rVZYp
   return FALSE;
 }
 
