@@ -8,3 +8,5 @@ src/.gitignore
 spec/technical-spec
 spec/technical-spec.html
 
+game-src/graphics-driver
+
