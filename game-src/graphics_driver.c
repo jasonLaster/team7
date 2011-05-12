@@ -1,5 +1,4 @@
 #include <gtk/gtk.h>
-
 #include "Graphics.h"
 
 int main(int argc, char **argv) {
@@ -18,8 +17,8 @@ int main(int argc, char **argv) {
 
 	gtk_widget_set_events(da, GDK_EXPOSURE_MASK);
   set_up_graphics(da);
-	gtk_widget_show_all(window);
+  gui_new(window);
 
-	g_timeout_add(16, timer, da);
+	gtk_widget_show_all(window);
 	gtk_main ();
 }

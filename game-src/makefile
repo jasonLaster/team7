@@ -26,8 +26,12 @@ all: graphics-driver
 graphics_helpers.o: graphics_helpers.c
 	gcc -c $(CFLAGS) -o graphics_helpers.o graphics_helpers.c $(INCLUDES)
 
-graphics.o:   Graphics.c Graphics.h
-	gcc -c $(CFLAGS) -o graphics.o Graphics.c $(INCLUDES)
+graphics.o:   graphics.c graphics.h
+	gcc -c $(CFLAGS) -o graphics.o graphics.c $(INCLUDES)
+
+gui.o:	gui.c gui.h
+	gcc -c $(CFLAGS) -o gui.o gui.c $(INCLUDES)
+
 
 clean:
 	rm -f $(BINS)
@@ -42,8 +46,8 @@ doc:
 
 # DRIVERS
 
-graphics-driver.o: Graphics_Driver.c 
+graphics-driver.o: graphics_driver.c 
 	gcc -c $(CFLAGS) -o graphics-driver.o Graphics_Driver.c $(INCLUDES)
 
-graphics-driver: graphics-driver.o graphics.o graphics_helpers.o
-	gcc -o graphics-driver graphics-driver.o graphics.o graphics_helpers.o $(LIBS)
+graphics-driver: graphics-driver.o graphics.o graphics_helpers.o gui.o
+	gcc -o graphics-driver graphics-driver.o graphics.o graphics_helpers.o gui.o $(LIBS)
