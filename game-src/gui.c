@@ -7,6 +7,7 @@ static gboolean cb_expose(GtkWidget *da, GdkEventExpose *event, gpointer user_da
 static void cb_timer(gpointer user_data);
 
 static gboolean configure(GtkWidget *da, GdkEventConfigure *event, gpointer user_data);
+static void gui_destroy(GtkWidget *widget, gpointer data);
 
 void gui_new(GtkWidget* window, GtkWidget* da){
 
@@ -23,7 +24,14 @@ void gui_new(GtkWidget* window, GtkWidget* da){
 }
 
 
-static void cb_keypress(GtkWidget *widget, GdkEventKey *kevent, gpointer data){}
+static void cb_keypress(GtkWidget *widget, GdkEventKey *kevent, gpointer data){
+  int key = kevent->keyval;
+ 
+  if(key>65360 && key<65365) printf("move player!\n"); //move_player(1, key%5);
+  else if (key == 32) printf("drop bomb!\n");//drop_bomb();
+  else if (key == 65511) gui_destroy(widget, NULL); //quit_app();
+
+}
 static void cb_keyrelease(GtkWidget *widget, GdkEventKey *kevent, gpointer data){}
 static void cb_timer(gpointer user_data) {}
 
@@ -62,4 +70,9 @@ static gboolean configure(GtkWidget *da, GdkEventConfigure *event, gpointer user
   glMatrixMode(GL_MODELVIEW);
 
 	return TRUE;
+}
+
+
+static void gui_destroy(GtkWidget *widget, gpointer data) {
+  gtk_main_quit ();
 }
