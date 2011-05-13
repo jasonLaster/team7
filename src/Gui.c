@@ -38,7 +38,8 @@ Gui *gui_new(void){
   gui->login = (Login *) malloc(sizeof(Login));
   gui->client = client_new();
 
-  // GtkAdjustment *adj;
+  GtkObject *adj1 = gtk_adjustment_new( (gdouble) 1, (gdouble) 0, (gdouble) 124, (gdouble) 1, (gdouble) 1, (gdouble) 1);
+  GtkObject *adj2 = gtk_adjustment_new( (gdouble) 1, (gdouble) 0, (gdouble) 10, (gdouble) 1, (gdouble) 1, (gdouble) 1);
 
   //declare the widgets
   GtkWidget   *window,
@@ -52,12 +53,12 @@ Gui *gui_new(void){
               *quitItem,
               *openItem,
               *loginItem,
-              *instrumentItem1,
-              *instrumentItem2,
+              *instrumentItem,
+              *levelItem,
               *playButton,
               *da,
-              // *spinButton1,
-              // *spinButton2,
+              *spinButton1,
+              *spinButton2,
               *table;
 
   GTimer *timer;
@@ -133,13 +134,12 @@ Gui *gui_new(void){
   quitItem = gtk_menu_item_new_with_label("Quit");
   openItem = gtk_menu_item_new_with_label("Open");
   loginItem = gtk_menu_item_new_with_label("Login");
-  instrumentItem1 = gtk_menu_item_new_with_label("Instrument");
-  instrumentItem2 = gtk_menu_item_new_with_label("Instrument");
+  instrumentItem = gtk_label_new("Instrument:");
+  levelItem = gtk_label_new("Level:");
   gtk_widget_show(quitItem);
   gtk_widget_show(openItem);
   gtk_widget_show(loginItem);
-  gtk_widget_show(instrumentItem1);
-  gtk_widget_show(instrumentItem2);
+  gtk_widget_show(instrumentItem);
 
 
   //links the menu to the items
@@ -152,9 +152,6 @@ Gui *gui_new(void){
   gtk_menu_append(GTK_MENU_SHELL (fileMenu), openItem);
   gtk_menu_append(GTK_MENU (fileMenu), quitItem);
 
-  gtk_menu_shell_append(GTK_MENU_SHELL (songMenu), instrumentItem1);
-  gtk_menu_shell_append(GTK_MENU_SHELL (userMenu), instrumentItem2);
-
   //setup the menu item call backs
   g_signal_connect(GTK_OBJECT(quitItem), "activate", G_CALLBACK(delete_event), gui); // the data goes in the kevent, this bad but whatever
   g_signal_connect(GTK_OBJECT(openItem), "activate", G_CALLBACK(click_open_song), gui); // the data goes in the kevent, this bad but whatever
@@ -162,11 +159,17 @@ Gui *gui_new(void){
 
   //set up the drawing area
   da = gtk_drawing_area_new ();
-  gtk_table_attach_defaults (GTK_TABLE (table), da, 0, 30, 2, 30);
+  gtk_table_attach_defaults (GTK_TABLE (table), da, 0, 30, 3, 30);
   gtk_widget_set_events (da, GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK);
   set_up_graphics(da);
 
-  //setup the button
+  //setup the buttons
+  spinButton1 = gtk_spin_button_new( adj1, (gdouble) 1.0, 1);
+  gtk_table_attach_defaults (GTK_TABLE (table), instrumentItem, 0, 5, 2, 3);
+  gtk_table_attach_defaults (GTK_TABLE (table), spinButton1, 5, 10, 2, 3);
+  spinButton2 = gtk_spin_button_new( adj2, 1.0, 1);
+  gtk_table_attach_defaults (GTK_TABLE (table), levelItem, 10, 15, 2, 3);
+  gtk_table_attach_defaults (GTK_TABLE (table), spinButton2, 15, 20, 2, 3);
   playButton = gtk_button_new_with_label("Play");
   gtk_table_attach_defaults (GTK_TABLE (table), playButton, 0, 30, 1, 2);
 
@@ -417,9 +420,7 @@ void gui_txt_recv(Gui *gui, char *line){
 
 
 static void destroy(GtkWidget *widget, gpointer data) {
-
   gtk_main_quit ();
-
 }
 
 /*

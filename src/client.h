@@ -25,7 +25,7 @@ struct client{
 };
 
 Client *client_new();
-int client_connect(Client *client);
+int client_connect(Client *client, char *address);
 char *client_listen(Client *client);
 int client_send(Client *client, char *msg);
 
